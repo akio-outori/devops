@@ -1,0 +1,39 @@
+---
+
+- name: Add Erlang Solutions Repo
+  yum:
+    name: http://packages.erlang-solutions.com/erlang-solutions-1.0-1.noarch.rpm
+    state: installed
+
+- name: Install Erlang
+  yum: name=erlang state=installed
+
+- name: Import RabbitMQ Repository Signing Key
+  rpm_key: state=present key=http://www.rabbitmq.com/rabbitmq-signing-key-public.asc
+
+- name: Install RabbitMQ 3.6.0
+  yum:
+    name: http://www.rabbitmq.com/releases/rabbitmq-server/v3.6.0/rabbitmq-server-3.6.0-1.noarch.rpm
+    state: installed
+  register: rabbitmq
+
+- name: Wait for 10 Seconds Before Starting RabbitMQ
+  command: /bin/sleep 10
+
+- name: Start and Enable RabbitMQ
+  service: name=rabbitmq-server state=started enabled=yes
+
+- name: Create RabbitMQ Vhost
+  command: rabbitmqctl add_vhost {{ vhost }}
+  when: rabbitmq.changed
+
+- name: Create RabbitMQ User
+  command: rabbitmqctl add_user {{ vhost_user }} {{ vhost_pass }}
+  when: rabbitmq.changed
+
+- name: Set RabbitMQ Permissions
+  command: rabbitmqctl set_permissions -p {{ vhost }} {{ vhost_user }} ".*" ".*" ".*"
+  when: rabbitmq.changed
+
+
+

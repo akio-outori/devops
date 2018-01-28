@@ -1,0 +1,6 @@
+---
+
+- include: includes/install_java.yml
+- include: includes/create_hadoop_user.yml
+- include: includes/install_hadoop.yml
+- include: includes/start_hadoop.yml 

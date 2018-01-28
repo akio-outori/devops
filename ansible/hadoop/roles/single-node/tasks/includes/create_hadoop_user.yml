@@ -1,0 +1,29 @@
+---
+
+- name: Create the Hadoop User
+  user: 
+    name: "{{ hadoop_user }}"
+    comment: "Hadoop framework user" 
+    shell: /bin/bash
+    generate_ssh_key: yes
+    ssh_key_bits: 4096
+    ssh_key_file: .ssh/id_rsa
+  become: yes
+
+- name: Copy SSH-Key to authorized_keys
+  command: 'cp /home/hadoop/.ssh/id_rsa.pub /home/hadoop/.ssh/authorized_keys'
+  become: yes
+  become_user: "{{ hadoop_user }}"
+
+- name: Set Permissions on SSH Keys
+  file:
+    path: "{{ item }}"
+    owner: "{{ hadoop_user }}"
+    group: "{{ hadoop_user }}"
+    mode: 0600
+  become: yes
+  become_user: "{{ hadoop_user }}"
+  with_items:
+    - /home/hadoop/.ssh/id_rsa
+    - /home/hadoop/.ssh/authorized_keys
+ 

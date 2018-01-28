@@ -1,0 +1,23 @@
+---
+
+- name: Check for Sensu Repo
+  stat: 
+    path: /home/centos/ansible/sensu/main.yml
+  register: ansible_repo
+
+- name: Clone Sensu Repo for Post-Installation
+  git:
+    repo: "{{ sensu_git_repo }}"
+    dest: /home/centos/ansible
+    accept_hostkey: yes
+    key_file: /home/centos/.ssh/id_rsa
+    version: "{{ sensu_git_branch }}"
+  when: ansible_repo.stat.exists == False
+
+- name: Set permissions on the Ansible Repo for the centos User
+  file:
+    path: /home/centos/ansible
+    state: directory
+    owner: centos
+    group: centos
+    recurse: yes

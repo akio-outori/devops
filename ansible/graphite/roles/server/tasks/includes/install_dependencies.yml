@@ -1,0 +1,21 @@
+---
+
+- name: Install EPEL
+  yum: name=epel-release state=present
+
+- name: Install dependencies via yum
+  yum: name={{ item }} state=present
+  with_items:
+    - pycairo
+    - django
+    - python-pip
+    - pytz
+    - fontconfig
+    - uwsgi
+    - nginx
+    - memcached
+    - python-memcached
+    - python-devel
+
+- name: Install Django-Tagging via pip
+  pip: name=django-tagging state=present

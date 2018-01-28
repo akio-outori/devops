@@ -1,0 +1,10 @@
+{
+  "checks": {
+    "load_average_over_15": {
+      "command": "/libexec/check_load -w 10,10,10 -c 15,15,15",
+      "handlers": [ "mailer" ],
+      "subscribers": [ "all" ],
+      "interval": 60
+    }
+  }
+}

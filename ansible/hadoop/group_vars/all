@@ -1,0 +1,5 @@
+---
+
+hadoop_user: hadoop
+hadoop_version: 2.6.4
+hadoop_root: /home/hadoop

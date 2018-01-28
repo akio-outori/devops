@@ -1,0 +1,9 @@
+---
+
+- name: Install Graphite Packages Via Pip
+  pip: name={{ item }} state=present
+  with_items:
+    - https://github.com/graphite-project/ceres/tarball/master
+    - whisper
+    - carbon
+    - graphite-web

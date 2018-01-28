@@ -1,0 +1,19 @@
+---
+
+- name: create temp copy of sudoers
+  command: cp -f /etc/sudoers /etc/sudoers.tmp
+
+- name: create backup of sudoers
+  command: cp -f /etc/sudoers /etc/sudoers.bak
+
+- name: Allow User to Use Sudo Without a TTY
+  lineinfile: >
+        dest=/etc/sudoers.tmp
+        state=present
+        insertafter="Defaults    requiretty"
+        line="Defaults:{{ user }} !requiretty"
+  register: requiretty
+
+- name: Write Sudoers
+  shell: visudo -q -c -f /etc/sudoers.tmp && cp -f /etc/sudoers.tmp /etc/sudoers
+  when: requiretty.changed

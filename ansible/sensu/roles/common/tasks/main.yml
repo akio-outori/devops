@@ -1,0 +1,12 @@
+---
+
+- include: includes/basic-tools.yml
+- include: includes/epel.yml
+- include: includes/firewall.yml
+- include: includes/hostname.yml
+- include: includes/ntp.yml
+- include: includes/snmp.yml
+- include: includes/selinux.yml
+- include: includes/install_deploy_keys.yml
+- include: includes/clone_sensu_repo.yml
+- include: includes/install_monitoring_plugins.yml

@@ -1,0 +1,25 @@
+# Path for the second hdd .vdi
+file_to_disk = "sdb.vdi"
+
+Vagrant.configure("2") do |config|
+  config.vm.box         = "mvbcoding/awslinux"
+  config.ssh.insert_key = false
+  config.vm.provision "shell", path: "setup.sh"
+
+  config.vm.provider "virtualbox" do |vb|
+    # Connect network interface at boot (workaround)
+    vb.customize ["modifyvm", :id, "--cableconnected1", "on"]
+
+    # Create a second disk since the .vmdk is 8Gb
+    unless File.exist?(file_to_disk)
+      vb.customize ['createhd', '--filename', file_to_disk, '--size', 40 * 1024]
+    end
+    vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', file_to_disk]
+
+    # Set memory
+    vb.memory  = 8192
+
+    # Set cpus
+    vb.cpus    = 4
+  end
+end

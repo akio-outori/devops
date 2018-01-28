@@ -1,0 +1,13 @@
+{
+  "client": {
+    "name": "{{ ansible_fqdn }}",
+    "address": "{{ ansible_default_ipv4.address }}",
+    "subscriptions": [
+      "test"
+    ],
+    "socket": {
+      "bind": "127.0.0.1",
+      "port": 3030
+    }
+  }
+}

@@ -1,0 +1,11 @@
+---
+
+- name: CentOS 6 Stop and Disable IPTables
+  service: name=iptables state=stopped enabled=no
+  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '6'
+
+#- name: CentOS 7 Stop and Disable Firewalld
+#  service: name=firewalld state=stopped enabled=no
+#  when: ansible_distribution == 'CentOS' and ansible_distribution_major_version == '7'
+
+

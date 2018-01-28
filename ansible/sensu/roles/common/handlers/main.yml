@@ -1,0 +1,4 @@
+---
+
+- name: Install Monitoring Plugins
+  script: roles/common/files/install_monitoring_plugins.sh "{{ monitoring_repo_path }}" "{{ monitoring_install_path }}"

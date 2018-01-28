@@ -1,0 +1,21 @@
+---
+
+- include_vars: roles/common/files/github_key.yml
+- include_vars: roles/common/files/ansible_key.yml
+
+- name: Copy Deploy Keys from Ansible Vault
+  copy: 
+    content: "{{ github_key }}" 
+    dest: /home/centos/.ssh/id_rsa 
+    owner: centos 
+    group: centos 
+    mode: 0600
+
+- name: Copy Ansible Keys
+  copy: 
+    content: "{{ ansible_key }}"
+    dest: /home/centos/.ssh/ansible_key 
+    owner: centos 
+    group: centos 
+    mode: 0600
+

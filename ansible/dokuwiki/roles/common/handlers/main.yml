@@ -1,0 +1,4 @@
+---
+
+- name: Restart and Enable Apache
+  service: name=httpd state=restarted enabled=yes

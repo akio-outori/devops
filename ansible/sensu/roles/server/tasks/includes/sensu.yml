@@ -1,0 +1,62 @@
+---
+
+- name: Install Sensu Repository
+  copy: 
+    src: roles/server/files/sensu.repo 
+    dest: /etc/yum.repos.d/sensu.repo 
+    owner: root 
+    group: root 
+    mode: 0644
+
+- name: Install Sensu
+  yum: 
+    name: sensu 
+    state: present
+
+- name: Create the Configuration Directories
+  file: 
+    path: "{{ item }}"
+    state: directory 
+    owner: root 
+    group: root
+  with_items:
+    - /etc/sensu/conf.d
+    - /etc/sensu/conf.d/checks
+    - /etc/sensu/conf.d/handlers
+
+- name: Copy Sensu Server Config
+  template: 
+    src:  "{{ item }}"
+    dest: /etc/sensu/conf.d/
+  with_items:
+    - roles/server/templates/transport.json
+    - roles/server/templates/api.json
+    - roles/server/templates/redis.json
+    - roles/server/templates/rabbitmq.json
+    - roles/server/templates/client.json 
+  notify:
+    - Restart Sensu Services
+
+- name: Copy Checks Files
+  template:
+    src: "{{ item }}"
+    dest: /etc/sensu/conf.d/checks/
+  with_items:
+    - roles/server/templates/checks/linux/load_average_over_15.json
+    - roles/server/templates/checks/linux/disk_space_less_than_5G_root.json
+    - roles/server/templates/checks/linux/ntp_clock_skew.json
+    - roles/server/templates/checks/sensu_server.json
+  notify:
+    - Restart Sensu Services
+
+- name: Install Email Handler
+  gem: name=sensu-plugins-mailer state=present
+
+- name: Copy Handler Files
+  template:
+    src: "{{ item }}"
+    dest: /etc/sensu/conf.d/handlers/
+  with_items:
+    - roles/server/templates/handlers/mailer.json
+  notify:
+    - Restart Sensu Services

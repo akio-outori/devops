@@ -1,0 +1,35 @@
+{ 
+  "checks": {
+    "rabbitmq_server_running": {
+      "command": "/libexec/check_procs -c 1: -C rabbitmq-server",
+      "standalone": true,
+      "interval": 60
+    },
+    "redis_server_running": {
+      "command": "/libexec/check_procs -c 1: -C redis-server",
+      "standalone": true,
+      "interval": 60
+    },
+    "sensu_server_running": {
+      "command": "/libexec/check_procs -c 1: -C sensu-server",
+      "standalone": true,
+      "interval": 60
+    },
+    "sensu_webui_running": {
+      "command": "/libexec/check_procs -c 1: -C uchiwa",
+      "standalone": true,
+      "interval": 60
+    },
+    "sensu_api_running": {
+      "command": "/libexec/check_procs -c 1: -C sensu-api",
+      "standalone": true,
+      "interval": 60
+    },
+    "sensu_client_running": {
+      "command": "/libexec/check_procs -c 1: -C sensu-client",
+      "standalone": true,
+      "interval": 60
+    }
+  }
+}
+

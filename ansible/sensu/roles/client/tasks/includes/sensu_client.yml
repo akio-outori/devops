@@ -1,0 +1,32 @@
+---
+
+- name: Install Sensu Repository
+  copy:
+    src: roles/common/files/sensu.repo
+    dest: /etc/yum.repos.d/sensu.repo
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Install Sensu
+  yum:
+    name: sensu
+    state: present
+
+- name: Create the Configuration Directory
+  file:
+    path: /etc/sensu/conf.d
+    state: directory
+    owner: root
+    group: root
+
+- name: Copy Sensu Client Config
+  template:
+    src: "{{ item }}"
+    dest: /etc/sensu/conf.d/client.json
+  with_items:
+    - roles/client/templates/client.json
+    - roles/client/templates/rabbitmq.json
+  notify:
+    - Restart Sensu Client
+

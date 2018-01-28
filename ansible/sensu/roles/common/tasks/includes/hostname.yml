@@ -1,0 +1,12 @@
+---
+
+- name: Update /etc/cloud/cloud.cfg
+  lineinfile: "dest=/etc/cloud/cloud.cfg state=present line='preserve_hostname: true'"
+  tags:
+    - ec2
+
+- name: Update /etc/hostname
+  lineinfile: dest=/etc/hostname state=present regexp={{ ansible_hostname }} line={{ inventory_hostname }}
+  tags:
+    - ec2
+

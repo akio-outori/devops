@@ -1,0 +1,57 @@
+---
+
+- name: Download Hadoop
+  get_url:
+    url: "http://apache.claz.org/hadoop/common/hadoop-2.6.4/hadoop-{{ hadoop_version }}.tar.gz"
+    dest: "/home/hadoop/hadoop-{{ hadoop_version }}.tar.gz"
+    owner: "{{ hadoop_user }}"
+    group: "{{ hadoop_user }}"
+    mode: 0755
+  become: yes
+  become_user: "{{ hadoop_user }}"
+    
+- name: Extract Hadoop
+  unarchive:
+    src: "/home/hadoop/hadoop-{{ hadoop_version }}.tar.gz"
+    dest: "/home/hadoop/"
+    owner: "{{ hadoop_user }}"
+    group: "{{ hadoop_user }}"
+    copy: no
+  become: yes
+  become_user: "{{ hadoop_user }}"
+
+- name: Correct Permissions on executables in hadoop root dir
+  command: "find {{ hadoop_root }}/hadoop-{{ hadoop_version }} -name *.sh | xargs -i chmod 750 {}"
+  become: yes
+  become_user: "{{ hadoop_user }}"
+
+- name: Copy .bashrc for hadoop
+  template:
+    src: templates/bash/bashrc
+    dest: "{{ hadoop_root }}/.bashrc"
+    owner: "{{ hadoop_user }}"
+    group: "{{ hadoop_user }}"
+    mode: 0644
+  become: yes
+  become_user: "{{ hadoop_user }}"
+
+- name: Source bashrc
+  command: "source /home/{{ hadoop_user }}/.bashrc"
+  become: yes
+  become_user: "{{ hadoop_user }}"
+
+- name: Copy Hadoop Config Files
+  template:
+    src: "../../templates/hadoop/config/{{ item }}"
+    dest: "{{ hadoop_root }}/hadoop-{{ hadoop_version }}/etc/hadoop/"
+    owner: "{{ hadoop_user }}"
+    group: "{{ hadoop_user }}"
+    mode: 0644
+  become: yes
+  become_user: "{{ hadoop_user }}"
+  with_items:
+    - core-site.xml
+    - hdfs-site.xml
+    - mapred-site.xml
+    - yarn-site.xml
+

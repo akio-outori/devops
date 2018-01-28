@@ -1,0 +1,19 @@
+---
+
+- name: Restart Sensu Services
+  service:
+    name: "{{ item }}"
+    state: restarted
+    enabled: yes
+  with_items:
+    - sensu-server
+    - sensu-api
+    - sensu-client
+
+- name: Restart Uchiwa UI
+  service:
+    name: uchiwa
+    state: restarted
+    enabled: yes 
+
+

@@ -1,0 +1,15 @@
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "ubuntu/trusty64"
+  config.vm.provision "docker"  
+
+  # Configuration for boot2docker - https://github.com/mitchellh/boot2docker-vagrant-box/issues/79
+  config.ssh.insert_key = false
+
+  # VM size for boot2docker
+  config.vm.provider "virtualbox" do |boot|
+    boot.memory = 8192
+    boot.cpus   = 4
+  end
+
+end

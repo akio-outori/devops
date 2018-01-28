@@ -1,0 +1,20 @@
+---
+
+# SNMP
+snmp_community: 'kzJ8RhRKSGYNqfnS'
+sys_location: 'aws-east-1'
+support_email: 'jhally@gmail.com'
+
+# Sensu
+sensu_git_repo: 'git@github.com:akio-outori/ansible.git'
+sensu_git_branch: 'master'
+
+# RabbitMQ
+vhost: '/sensu'
+vhost_user: 'sensu'
+vhost_pass: "sensu"
+
+# Monitoring Plugins
+monitoring_git_repo: 'git@github.com:akio-outori/monitoring-plugins.git'
+monitoring_repo_path: '/home/centos/monitoring-plugins'
+monitoring_install_path: '/usr/local/libexec'

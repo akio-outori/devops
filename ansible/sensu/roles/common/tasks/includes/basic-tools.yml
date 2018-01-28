@@ -1,0 +1,17 @@
+---
+
+- name: Install Some Basic Tools
+  yum: name={{ item }} state=present
+  with_items:
+    - wget
+    - elinks
+    - nano
+    - screen
+    - net-tools
+    - git
+    - telnet
+    - gcc
+    - glibc
+    - glibc-common
+    - sudo
+

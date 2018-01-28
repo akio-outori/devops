@@ -1,0 +1,15 @@
+---
+
+- name: Install ntpd
+  yum: name=ntp state=present
+  register: ntp
+
+- name: Update Hardware Clock
+  command: ntpdate pool.ntp.org && hwclock --syshotc
+  when: ntp.changed
+
+- name: Stop and Disable chronyd
+  service: name=chronyd state=stopped enabled=no
+
+- name: Start and Enable ntpd Service
+  service: name=ntpd state=started enabled=yes

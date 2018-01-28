@@ -1,0 +1,12 @@
+{
+  "handlers": {
+    "mailer": {
+      "type": "pipe",
+      "command": "/usr/local/bin/handler-mailer.rb",
+      "mail_from": "support@jhallyburton.com",
+      "mail_to": "jhally@gmail.com",
+      "smtp_domain": "jhallyburton.com",
+      "admin_gui": "http://52.90.67.39:3000/"
+    }
+  }
+}

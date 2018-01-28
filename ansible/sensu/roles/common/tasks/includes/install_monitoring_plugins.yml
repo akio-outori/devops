@@ -1,0 +1,16 @@
+---
+
+- name: Install Development Tools for Dependencies
+  yum:
+    name: "@Development Tools"
+    state: present
+
+- name: Pull down Monitoring Plugin Repo from github
+  git:
+    repo: "{{ monitoring_git_repo }}"
+    dest: "{{ monitoring_repo_path }}"
+    accept_hostkey: yes
+    key_file: /home/centos/.ssh/id_rsa
+    version: master
+  notify:
+    - Install Monitoring Plugins

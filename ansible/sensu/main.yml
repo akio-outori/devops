@@ -1,0 +1,19 @@
+---
+
+- hosts: all
+  user: centos
+  become: yes
+  roles:
+    - common
+
+- hosts: server
+  user: centos
+  become: yes
+  roles:
+    - server
+
+- hosts: client
+  user: centos
+  become: yes
+  roles:
+    - client

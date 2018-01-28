@@ -1,0 +1,6 @@
+{
+  "redis": {
+    "host": "{{ sensu_server }}",
+    "port": 6379
+  }
+}

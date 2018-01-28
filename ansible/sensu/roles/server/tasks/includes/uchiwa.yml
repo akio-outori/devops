@@ -1,0 +1,13 @@
+---
+
+- name: Install Uchiwa (Dashboard)
+  yum:
+    name: uchiwa
+    state: present
+
+- name: Copy Dashboard Config
+  template:
+    src: ../templates/uchiwa.json
+    dest: /etc/sensu/uchiwa.json
+  notify:
+    - Restart Uchiwa UI

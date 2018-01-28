@@ -1,0 +1,12 @@
+---
+
+- name: Copy Cluster Config Script
+  file:
+    src: "../../templates/hadoop/scripts/hadoop_config.sh"
+    dest: "/home/{{ hadoop_user }}/hadoop_config.sh"
+    owner: "{{ hadoop_user }}"
+    group: "{{ hadoop_user }}"
+    mode: 0750
+
+- name: Configure Hadoop
+  command: "su -s /bin/sh -c \"/home/{{ hadoop_user }}/hadoop_config.sh {{ hadoop_root }}\" {{ hadoop_user }}"

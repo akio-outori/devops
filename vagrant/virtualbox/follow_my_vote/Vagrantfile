@@ -1,0 +1,73 @@
+$script = <<SCRIPT
+
+# System Update
+sudo apt-get update -y
+sudo apt-get upgrade -y
+
+# Install dependencies
+sudo apt-get install -y wget git cmake zlib1g-dev libbz2-dev clang npm ninja autoconf libtool libreadline-dev doxygen
+sudo apt-get install -y build-essential g++ python-dev autotools-dev libicu-dev build-essential libbz2-dev libncurses5-dev
+
+# Download boost 1.57.0
+wget http://sourceforge.net/projects/boost/files/boost/1.57.0/boost_1_57_0.tar.gz
+tar -xvf boost_1_57_0.tar.gz
+
+# Build boost
+cd ~/boost_1_57_0/
+sudo ./bootstrap.sh --prefix=/usr/
+sudo ./b2 -j $(nproc)
+sudo ./b2 -j $(nproc) install
+
+# Pull down sources for graphene
+cd ~/
+git clone https://github.com/FollowMyVote/graphene.git
+
+# Build graphene
+cd ~/graphene
+git checkout v2.15.306
+git submodule update --init --recursive
+
+# Build graphene
+cmake -- -j $(nproc) -DCURSES_LIBRARY=/usr/lib/x86_64-linux-gnu/libncurses.so -DCURSES_INCLUDE_PATH=/usr/include/ -DCMAKE_BUILD_TYPE=Debug .
+make -j $(nproc)
+
+#./programs/witness_node/witness_node
+
+#git clone https://github.com/akio-outori/graphene-ui
+
+# Fix sources that don't pull correctly
+#cd graphene/libraries
+#rm -rf fc
+#git clone https://github.com/FollowMyVote/fc.git --recursive
+
+# install js dependencies for ui
+#cd ~/graphene-ui/dl
+#npm install minimatch
+#npm install glob
+#npm install coffeescript
+#npm install coffee-script
+#npm install
+
+#cd web/ && npm install && cd ..
+
+# Build graphene
+#cd ~/graphene/
+#cmake -G Ninja -DCMAKE_CXX__COMPILER=clang++ -DCMAKE_C_COMPILER=clang -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=/opt/graphene
+#ninja
+
+SCRIPT
+
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "ubuntu/trusty64"
+
+  config.ssh.insert_key = false
+  config.vm.provision 'shell', inline: $script, privileged: false
+
+  # VM size for boot2docker
+  config.vm.provider "virtualbox" do |boot|
+    boot.memory = 8192
+    boot.cpus   = 4
+  end
+
+end

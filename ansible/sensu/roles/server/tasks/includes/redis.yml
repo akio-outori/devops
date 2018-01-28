@@ -1,0 +1,13 @@
+---
+
+- name: Install Redis
+  yum: name=redis state=installed
+
+- name: Start and Enable Redis
+  service: name=redis state=started enabled=yes
+
+- name: Check if Redis is Responding
+  command: redis-cli ping | grep -q "PONG"
+  register: redis_responding
+
+

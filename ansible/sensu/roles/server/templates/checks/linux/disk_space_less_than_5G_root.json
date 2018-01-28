@@ -1,0 +1,10 @@
+{
+  "checks": {
+    "free_disk_space_less_than_5G_root": {
+      "command": "/libexec/check_disk -w 5000 -c 5000 -p /",
+      "handlers": [ "mailer" ],
+      "subscribers": [ "all" ],
+      "interval": 60
+    }
+  }
+}

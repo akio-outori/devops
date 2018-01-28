@@ -1,0 +1,21 @@
+---
+
+- name: Install Net-SNMP
+  yum: 
+     name: net-snmp 
+     state: present
+
+- name: Copy /etc/snmp/snmpd.conf
+  copy: 
+    src: roles/common/templates/snmpd.conf.j2 
+    dest: /etc/snmp/snmpd.conf 
+    owner: root 
+    group: root 
+    mode: 0644
+
+- name: Start snmpd
+  service: 
+    name: snmpd 
+    state: started 
+    enabled: yes
+

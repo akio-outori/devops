@@ -1,0 +1,10 @@
+--- 
+
+- hosts: all
+  user: centos
+  become: yes
+
+  roles:
+    - common
+
+

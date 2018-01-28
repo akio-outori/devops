@@ -1,0 +1,9 @@
+rocommunity  {{ snmp_community }}
+proc  ntpd 0 0
+disk  / 5000000
+load  15 15 15
+sysservices 76
+master  off
+agentgroup  "group MyROGroup"
+syslocation  {{ sys_location }}
+syscontact  "Support <{{ support_email }}>"

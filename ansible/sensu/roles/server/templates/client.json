@@ -1,0 +1,41 @@
+{
+  "client": {
+    "name": "{{ ansible_fqdn }}",
+    "address": "{{ ansible_default_ipv4.address }}",
+    "subscriptions": [
+      "test"
+    ],
+    "socket": {
+      "bind": "127.0.0.1",
+      "port": 3030
+    }
+  },
+  
+  "checks": {
+    "load_average_over_15": {
+      "command": "/libexec/check_load -w 10,10,10 -c 15,15,15",
+      "standalone": true,
+      "interval": 60
+    },
+    "free_disk_space_less_than_5G_root": {
+      "command": "/libexec/check_disk -w 5000 -c 5000 -p /",
+      "standalone": true,
+      "interval": 60
+    },
+    "ntp_clock_skew": {
+      "command": "/libexec/check_ntp_time -H localhost",
+      "standalone": true,
+      "interval": 60
+    },
+    "rabbitmq_server_running": {
+      "command": "/libexec/check_procs -c 1: -C rabbitmq-server",
+      "standalone": true,
+      "interval": 60
+    },
+    "redis_server_running": {
+      "command": "/libexec/check_procs -c 1: -C redis-server",
+      "standalone": true,
+      "interval": 60
+    }
+  }
+}

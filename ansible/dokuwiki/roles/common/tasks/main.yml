@@ -1,0 +1,68 @@
+---
+
+- name: Install Python Bindings for SELinux (if not installed)
+  yum: name=policycoreutils-python state=present
+
+- name: Install Apache
+  yum: name=httpd state=present
+
+- name: Update Apache to use mod_rewrite
+  lineinfile: 
+    dest: /etc/httpd/conf.modules.d/mod_rewrite.conf
+    state: present
+    create: yes
+    line: 'LoadModule rewrite_module modules/mod_rewrite.so'
+  notify:
+    - Restart and Enable Apache
+
+- name: Update Apache to use PHP
+  lineinfile:
+    dest: /etc/httpd/conf.modules.d/php.conf
+    state: present
+    create: yes
+    line: 'LoadModule php5_module modules/libphp5.so'
+
+- name: Install PHP Dependencies
+  yum: name={{ item }} state=present
+  with_items:
+    - php-gd
+    - php
+
+- name: Set SELinux to Permissive for now
+  selinux: policy=targeted state=permissive
+
+- name: Check for existing Dokuwiki Installation
+  stat:
+    path: /var/www/html/doku.php
+  register: dokuwiki
+
+- name: Download Dokuwiki Stable
+  unarchive:
+    src: http://download.dokuwiki.org/src/dokuwiki/dokuwiki-stable.tgz
+    dest: /var/www
+    copy: no
+    owner: apache
+    group: apache 
+  when: dokuwiki.stat.exists == False
+
+- name: Remove Default Web Path
+  file: path=/var/www/html state=absent
+  when: dokuwiki.stat.exists == False
+
+- name: Move Dokuwiki to /var/www/html
+  shell: /bin/mv /var/www/dokuwiki* /var/www/html
+  when: dokuwiki.stat.exists == False
+
+- name: Create Default info.php
+  copy:
+    src: roles/common/files/httpd/info.php
+    dest: /var/www/html/info.php
+    owner: apache
+    group: apache
+
+- name: Create Dokuwiki Config File
+  copy: 
+    src: roles/common/files/httpd/dokuwiki.conf
+    dest: /etc/httpd/conf.d/dokuwiki.conf
+    owner: apache
+    group: apache

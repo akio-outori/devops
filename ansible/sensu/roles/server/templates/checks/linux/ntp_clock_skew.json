@@ -1,0 +1,10 @@
+{ 
+  "checks": {
+    "ntp_clock_skew": {
+      "command": "/libexec/check_ntp_time -H localhost",
+      "handlers": [ "mailer" ],
+      "subscribers": [ "all" ],
+      "interval": 60
+    }
+  }
+}

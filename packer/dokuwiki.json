@@ -1,0 +1,49 @@
+{
+
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": ""
+  },
+
+  "builders": [
+
+    {
+      "type": "amazon-ebs",
+      "access_key": "{{user `aws_access_key`}}",
+      "secret_key": "{{user `aws_secret_key`}}",
+      "region": "us-east-1",
+      "source_ami": "ami-6d1c2007",
+      "instance_type": "t2.micro",
+      "ssh_username": "centos",
+      "ssh_pty": "true",
+      "ami_name": "dokuwiki {{timestamp}}"
+    },
+
+    {
+      "type": "vmware-iso",
+      "iso_url": "http://mirror.5ninesolutions.com/centos/7/isos/x86_64/CentOS-7-x86_64-Minimal-1511.iso",
+      "iso_checksum": "88c0437f0a14c6e2c94426df9d43cd67",
+      "iso_checksum_type": "md5",
+      "ssh_username": "gsc",
+      "shutdown_command": "poweroff"
+    }
+  ],
+
+  "provisioners": [
+
+    {
+      "type": "shell",
+      "inline": [ 
+        "sudo yum install epel-release -y",
+        "sudo yum install ansible -y"
+      ] 
+    }, 
+
+    {
+      "type": "ansible-local",
+      "playbook_file": "../playbooks/dokuwiki.yml",
+      "extra_arguments": [ "-vvv" ]
+    }
+  ]
+
+}

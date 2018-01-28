@@ -1,0 +1,74 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Resources": {
+    
+    "TestCluster": {
+      "Type": "AWS::EMR::Cluster",
+      "Properties": {
+        "Instances": {
+          "AdditionalMasterSecurityGroups": [
+            "sg-dc2191a7"
+          ],
+          "Ec2KeyName": "personal-east-1",
+          "HadoopVersion": "2.7.2",
+          
+          "MasterInstanceGroup": {
+            "InstanceCount": 1,
+            "InstanceType": "m1.large",
+            "Market": "ON_DEMAND",
+            "Name": "Master"
+          },
+          
+          "CoreInstanceGroup": {
+            "InstanceCount": 2,
+            "InstanceType": "m1.large",
+            "Market": "ON_DEMAND",
+            "Name": "Core",
+            "EbsConfiguration": {
+              "EbsBlockDeviceConfigs": [{ 
+                "VolumeSpecification": { 
+                  "Iops": 10000, 
+                  "SizeInGB": 100, 
+                  "VolumeType": "gp2" 
+                }
+              }, {
+                "VolumesPerInstance": 1 
+              }
+            ],
+              "EbsOptimized": true
+            }
+          },
+          
+          "TerminationProtected" : true
+        },
+        "Name": "TestCluster",
+        "JobFlowRole" : "EMR_EC2_DefaultRole",
+        "ServiceRole" : "EMR_DefaultRole",
+        "ReleaseLabel" : "emr-4.2.0",
+        "Tags": [
+          {
+            "Key": "IsTest",
+            "Value": "True"
+          }
+        ]
+      }
+    },
+    
+    "TaskPool": {
+      "Type": "AWS::EMR::InstanceGroupConfig",
+      "Properties": {
+        "BidPrice": "0.039",
+        "InstanceCount": "10",
+        "InstanceRole": "TASK",
+        "InstanceType": "m1.large",
+        "JobFlowId": {
+          "Ref": "TestCluster"
+        },
+        "Market": "SPOT",
+        "Name": "Task"
+      },
+      "DependsOn": "TestCluster"
+    }
+  
+  }
+}

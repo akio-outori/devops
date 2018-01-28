@@ -1,0 +1,42 @@
+{
+
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": ""
+  },
+
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "us-east-1",
+    "source_ami": "ami-6d1c2007",
+    "instance_type": "t2.micro",
+    "ssh_username": "centos",
+    "ssh_pty": "true",
+    "ami_name": "centos 7 {{timestamp}}"
+  }],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "sleep 30",
+        "sudo yum update -y",
+        "sudo yum install epel-release -y",
+        "sudo yum install ansible -y",
+        "sudo echo 'Hus9dbpSmj2fv5YM' > /home/centos/.ssh/vault_key",
+        "sudo chmod 600 /home/centos/.ssh/vault_key"
+      ]
+    },
+
+    {
+      "type": "ansible-local",
+      "playbook_dir": "../ansible/sensu",
+      "playbook_file": "../ansible/sensu/main.yml",
+      "group_vars": "../ansible/sensu/group_vars",
+      "role_paths": "../ansible/sensu/roles",
+      "extra_arguments": "--skip-tags 'ec2'"
+    }
+  ]
+}

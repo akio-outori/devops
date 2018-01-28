@@ -1,0 +1,44 @@
+{
+
+  "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": ""
+  },
+
+  "builders": [{
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "us-east-1",
+    "source_ami": "ami-6d1c2007",
+    "instance_type": "t2.micro",
+    "ssh_username": "centos",
+    "ssh_pty": "true",
+    "ami_name": "centos 7 {{timestamp}}"
+  }],
+
+  "provisioners": [
+
+    {
+      "type": "shell",
+      "inline": [
+        "sleep 30",
+        "sudo yum update -y"
+      ]
+    },
+
+    {
+      "type": "chef-solo",
+      "cookbook_paths": ["../chef/cookbooks"],
+      "run_list": [
+        "recipe[rhel-server::basic_tools]",
+        "recipe[rhel-server::epel]",
+        "recipe[rhel-server::firewall]",
+        "recipe[rhel-server::selinux]",
+        "recipe[rhel-server::net-snmp]",
+        "recipe[rhel-server::ntp]",
+        "recipe[rhel-server::ec2-hostname]"
+      ]
+    }
+  ]
+}

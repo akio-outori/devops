@@ -1,0 +1,13 @@
+#
+LABEL=/     /              ext4    defaults,noatime  1   1
+tmpfs       /dev/shm       tmpfs   defaults        0   0
+devpts      /dev/pts       devpts  gid=5,mode=620  0   0
+sysfs       /sys           sysfs   defaults        0   0
+proc        /proc          proc    defaults        0   0
+
+/dev/sdb1   /tmp           ext4    defaults,noatime  1   1
+/dev/sdc1   /home          ext4    defaults,noatime  1   1
+/dev/sdd1   /var           ext4    defaults,noatime  1   1
+/dev/sde1   /var/tmp       ext4    defaults,noatime  1   1
+/dev/sdf1   /var/log       ext4    defaults,noatime  1   1
+/dev/sdg1   /var/log/audit ext4    defaults,noatime  1   1

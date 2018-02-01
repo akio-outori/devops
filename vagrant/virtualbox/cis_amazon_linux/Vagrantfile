@@ -1,0 +1,35 @@
+Vagrant.configure("2") do |config|
+  config.vm.box         = "mvbcoding/awslinux"
+  config.ssh.insert_key = false
+  config.vm.provision "shell", path: "scripts/update.sh"
+  config.vm.provision "shell", path: "scripts/filesystems.sh"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--cableconnected1", "on"]
+
+    vb.customize ['createmedium', '--filename', 'disks/tmp.vdi',           '--variant', 'Standard', '--size', 1024 ]
+    vb.customize ['createmedium', '--filename', 'disks/home.vdi',          '--variant', 'Standard', '--size', 1024 ]
+    vb.customize ['createmedium', '--filename', 'disks/var.vdi',           '--variant', 'Standard', '--size', 1024 ]
+    vb.customize ['createmedium', '--filename', 'disks/var_tmp.vdi',       '--variant', 'Standard', '--size', 1024 ]
+    vb.customize ['createmedium', '--filename', 'disks/var_log.vdi',       '--variant', 'Standard', '--size', 1024 ]
+    vb.customize ['createmedium', '--filename', 'disks/var_log_audit.vdi', '--variant', 'Standard', '--size', 512  ]
+
+    vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', 'disks/tmp.vdi',           '--comment', 'tmp']
+    vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 2, '--device', 0, '--type', 'hdd', '--medium', 'disks/home.vdi',          '--comment', 'home']
+    vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 3, '--device', 0, '--type', 'hdd', '--medium', 'disks/var.vdi',           '--comment', 'var']
+    vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 4, '--device', 0, '--type', 'hdd', '--medium', 'disks/var_tmp.vdi',       '--comment', 'var_tmp']
+    vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 5, '--device', 0, '--type', 'hdd', '--medium', 'disks/var_log.vdi',       '--comment', 'var_log']
+    vb.customize ['storageattach', :id, '--storagectl', 'SATA', '--port', 6, '--device', 0, '--type', 'hdd', '--medium', 'disks/var_log_audit.vdi', '--comment', 'var_log_audit']
+  end
+
+  # Clean up additional hard disk images on destroy
+  #  config.trigger.after :destroy do
+  #    run "VboxManage closemedium disks/tmp.vdi           --delete"
+  #    run "VboxManage closemedium disks/home.vdi          --delete"
+  #    run "VboxManage closemedium disks/var.vdi           --delete"
+  #    run "VboxManage closemedium disks/var_tmp.vdi       --delete"
+  #    run "VboxManage closemedium disks/var_log.vdi       --delete"
+  #    run "VboxManage closemedium disks/var_log_audit.vdi --delete"
+  #  end
+
+end

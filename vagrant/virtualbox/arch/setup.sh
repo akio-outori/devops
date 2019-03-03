@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Fix upstream ISO issues (age)
+pacman -Rsd xorg-server --noconfirm
+pacman -Sy archlinux-keyring --noconfirm
+
 # Update and download packages
 pacman -Syu --noconfirm
 pacman -S --noconfirm archiso

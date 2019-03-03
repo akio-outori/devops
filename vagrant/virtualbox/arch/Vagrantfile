@@ -2,6 +2,11 @@ Vagrant.configure("2") do |config|
   config.vm.box = "terrywang/archlinux"
   config.vm.provision "shell", path: "setup.sh"
 
+  config.vm.provider "virtualbox" do |v|
+    v.memory = 8192
+    v.cpus = 4
+  end
+
   # Reboot to ensure we're using the most recent kernel
   config.vm.provision :reload
 end

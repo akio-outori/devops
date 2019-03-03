@@ -14,6 +14,12 @@ if ! grep -q zfs /etc/pacman.conf; then
     echo 'Server = http://archzfs.com/$repo/$arch' >> /etc/pacman.conf
 fi
 
+# Import DNS Settings
+cat << DNS > ~/archiso/airootfs/etc/resolv.conf
+nameserver 8.8.8.8
+nameserver 4.2.2.1
+DNS
+
 # Import keys for ZFS
 pacman-key -r F75D9D76
 pacman-key --lsign-key F75D9D76
@@ -68,12 +74,6 @@ session-wrapper=/etc/lightdm/Xsession
 
 [VNCServer]
 DDE
-
-# DNS Setup
-cat << DNS > ~/archiso/airootfs/etc/resolv.conf
-nameserver 8.8.8.8
-nameserver 4.2.2.1
-DNS
 
 # Custom Services Setup
 cat << CUSTOM > ~/archiso/airootfs/root/customize_airootfs.sh

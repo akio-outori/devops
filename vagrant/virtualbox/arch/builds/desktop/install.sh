@@ -16,29 +16,32 @@ HOSTNAME="zaku2"
 INSTALL="arch-chroot $ROOT"
 
 # User to install on the new system
-USER="char" 
+USER="comet" 
 
 function new_root() {
   eval $INSTALL ${*}
 }
 
 # Set a default directory of /mnt for the install path
-test -z $ROOT && ROOT='/mnt'
+test -z $ROOT || ROOT='/mnt'
 
 # Install System
 pacstrap /mnt base base-devel linux-headers
 
 # Install Utils
-new_root pacman -S --noconfirm sudo grub-efi-x86_64 awk dialog wpa_supplicant net-tools
+new_root pacman -S --noconfirm sudo efibootmgr cpio awk dialog wpa_supplicant net-tools
 
 # Install Drivers
-new_root pacman -S --noconfirm broadcom-wl-dkms xf86-input-synaptics mesa 
+new_root pacman -S --noconfirm linux-firmware xf86-input-synaptics xf86-video-nouveau
+
+# Insall Filesystems
+new_root pacman -S --noconfirm zfs-dkms
  
 # Install GUI
 new_root pacman -S --noconfirm xorg xorg-server deepin deepin-extra
 
 # Install GUI Applications
-new_root pacman -S --noconfirm chromium
+new_root pacman -S --noconfirm firefox
 
 # Install Development Tools
 new_root pacman -S --noconfirm git vagrant terraform virtualbox virtualbox-host-modules-arch virtualbox-guest-iso docker
@@ -97,11 +100,14 @@ session-wrapper=/etc/lightdm/Xsession
 [VNCServer]
 DDE
 
+# Custom Services Setup
+cat << CUSTOM > ~/archiso/airootfs/root/customize_airootfs.sh
+systemctl enable dhcpcd
+systemctl enable lightdm
+CUSTOM
+
 # Generate initramfs
 new_root mkinitcpio -p linux
-
-# Generate grub config
-new_root grub-mkconfig -o /boot/grub/grub.cfg
 
 # Inform the user that install is complete
 echo "Installation Complete!"

@@ -20,20 +20,16 @@ pacman-key --lsign-key F75D9D76
 
 # Update and install ZFS
 pacman -Sy --noconfirm
-pacman -S zfs-dkms --noconfirm
+
+# Copy pacman config to the new live cd
+cp -f /etc/pacman.conf ~/archiso/pacman.conf
 
 # Change to home dir
 cd ~/
 
-# Copy blacklist to the iso
+# Configure Loadable Modules
 mkdir -p ~/archiso/airootfs/etc/modprobe.d
-#cat << BLACKLIST > ~/archiso/airootfs/etc/modprobe.d/broadcom-wl.conf
-# wireless drivers (conflict with Broadcom hybrid wireless driver 'wl')
-#blacklist ssb
-#blacklist bcma
-#blacklist b43
-#blacklist brcmsmac
-#BLACKLIST
+echo "zfs" > ~/archiso/airootfs/etc/modprobe.d/zfs
 
 # Add packages to build
 cat << PACKAGES > ~/archiso/packages.x86_64
@@ -43,13 +39,19 @@ awk
 linux-headers
 linux-firmware
 xf86-input-synaptics
+xf86-video-nouveau
 dialog
 wpa_supplicant
 xorg
 xorg-server
 deepin
 deepin-extra
-mesa
+zfs-dkms
+efibootmgr
+arch-install-scripts
+vim
+cpio
+dhcpcd
 PACKAGES
 
 # DDE Setup
@@ -66,6 +68,18 @@ session-wrapper=/etc/lightdm/Xsession
 
 [VNCServer]
 DDE
+
+# DNS Setup
+cat << DNS > ~/archiso/airootfs/etc/resolv.conf
+nameserver 8.8.8.8
+nameserver 4.2.2.1
+DNS
+
+# Custom Services Setup
+cat << CUSTOM > ~/archiso/airootfs/root/customize_airootfs.sh
+systemctl enable dhcpcd
+systemctl enable lightdm
+CUSTOM
 
 # Copy install script to build
 cp /vagrant/builds/desktop/install.sh ~/archiso/airootfs/root/
